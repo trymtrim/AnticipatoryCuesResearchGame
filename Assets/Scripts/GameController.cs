@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
 	[SerializeField] private GameObject _mapPrefab;
 
 	[Header("Scene")]
+	[SerializeField] private PlayerController _player;
 	[SerializeField] private Text _scoreText;
 	[SerializeField] private Image _progressBar;
 	[SerializeField] private GameObject _gameFinishedPanel;
@@ -35,6 +36,7 @@ public class GameController : MonoBehaviour
 
 	private float _score = 0.0f;
 	private float _timeElapsed = 0.0f;
+	private List<float> _reactionTimes = new List<float>();
 
 	private void Awake()
 	{
@@ -48,6 +50,8 @@ public class GameController : MonoBehaviour
 			float boundsDistance = GameValues.boundsDistance + 0.5f;
 			_catSpawnXPositions.Add(Util.RandomRangeWithStaticSeed(-boundsDistance, boundsDistance));
 		}
+
+		Time.timeScale = 0.0f;
 	}
 
 	private void Start()
@@ -74,10 +78,12 @@ public class GameController : MonoBehaviour
 
 	private async void SpawnCat()
 	{
-		print(_catSpawnIntervals[0]);
+		float pitch = Util.RandomRangeWithStaticSeed(0.9f, 1.3f);
+		AudioSource audioSource = GetComponent<AudioSource>();
+		audioSource.pitch = pitch;
 
 		if ((int)GameValues.gameVersion == 2)
-			GetComponent<AudioSource>().Play();
+			audioSource.Play();
 
 		await Task.Delay((int)(GameValues.timeBetweenSoundCueAndSpawn * 1000.0f));
 
@@ -85,7 +91,7 @@ public class GameController : MonoBehaviour
 			return;
 
 		if ((int)GameValues.gameVersion == 1)
-			GetComponent<AudioSource>().Play();
+			audioSource.Play();
 
 		Instantiate(_fallingCatPrefab, new Vector2(_catSpawnXPositions[0], 0.0f), Quaternion.identity);
 
@@ -102,6 +108,11 @@ public class GameController : MonoBehaviour
 		_scoreText.text = GameValues.lerpScoreGain ? _score.ToString("F", CultureInfo.CreateSpecificCulture("en-CA")) : ((int)_score).ToString();
 	}
 
+	public void AddReactionTime(float reactionTime)
+	{
+		_reactionTimes.Add(reactionTime);
+	}
+
 	private void OnGameFinished()
 	{
 		_gameFinished = true;
@@ -109,18 +120,30 @@ public class GameController : MonoBehaviour
 		CancelInvoke();
 		_gameFinishedPanel.SetActive(true);
 
-		if (GameValues.trackData && PlayerPrefs.GetInt("AlreadyPlayed") == 0)
-			PushDataToDatabase(true); //TODO: Pass in actual validity
+		bool valid = _player.distanceTraveled >= GameValues.gameDuration * ((GameValues.minSpawnInterval + GameValues.maxSpawnInterval) / 4.0f) &&
+			_score >= GameValues.minScoreGain * GameValues.gameDuration / 10.0f;
+
+		float averageReactionTime = 0.0f;
+		foreach (float reactionTime in _reactionTimes)
+			averageReactionTime += reactionTime;
+
+		if (_reactionTimes.Count > 1)
+			averageReactionTime /= _reactionTimes.Count;
+
+		if (GameValues.trackData && PlayerPrefs.GetInt("AlreadyPlayed") == 0 && valid)
+			PushDataToDatabase(averageReactionTime, true); //TODO: Pass in actual validity
 		else
 			OnDataPushed();
+
+		print (averageReactionTime);
 	}
 
-	private async void PushDataToDatabase(bool valid)
+	private async void PushDataToDatabase(float reactionTime, bool valid)
 	{
 		string gameVersion = ((int)GameValues.gameVersion).ToString();
 		string score = _score.ToString();
-		string averageReactionTime = "2.5"; //TODO: Add actual reaction time
-		string distanceTraveled = "12.5"; //TODO: Add actual distance traveled
+		string averageReactionTime = reactionTime.ToString();
+		string distanceTraveled = _player.distanceTraveled.ToString();
 		string validity = valid ? "Yes" : "No";
 		DateTime dateTime = DateTime.Now;
 
@@ -158,6 +181,11 @@ public class GameController : MonoBehaviour
 	{
 		_loadingIndicator.SetActive(false);
 		_quitButton.SetActive(true);
+	}
+
+	public void StartGame()
+	{
+		Time.timeScale = 1.0f;
 	}
 
 	public void QuitGame()

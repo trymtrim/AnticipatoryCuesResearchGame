@@ -38,7 +38,7 @@ public static class GameValues
 		moveSpeed = 500.0f;
 		jumpForce = 400.0f;
 
-		minSpawnInterval = 1.5f;
+		minSpawnInterval = 1.25f;
 		maxSpawnInterval = 5.0f;
 		fallingSpeed = 2.0f;
 

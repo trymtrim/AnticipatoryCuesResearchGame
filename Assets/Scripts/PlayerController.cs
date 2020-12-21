@@ -4,13 +4,17 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class PlayerController : MonoBehaviour
 {
+	public float distanceTraveled { get; private set; } = 0.0f;
+
 	private Rigidbody2D _rigidbody;
 
 	private bool _isGrounded = false;
+	private Vector2 _lastFramePosition;
 
 	private void Start()
 	{
 		_rigidbody = GetComponent<Rigidbody2D>();
+		_lastFramePosition = transform.position;
 	}
 
 	private void Update()
@@ -23,6 +27,10 @@ public class PlayerController : MonoBehaviour
 	{
 		UpdateGroundedState();
 		Move(Input.GetAxis("Horizontal"));
+
+		float distanceTraveledSinceLastFrame = Vector2.Distance(_lastFramePosition, transform.position);
+		distanceTraveled += distanceTraveledSinceLastFrame;
+		_lastFramePosition = transform.position;
 	}
 
 	private void UpdateGroundedState()

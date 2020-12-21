@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -7,6 +8,7 @@ public class FallingCatController : MonoBehaviour
 	private float _spawnHeight = 5.25f;
 
 	private bool _isGrounded = false;
+	private float _timeSinceSpawn = 0.0f;
 
 	private void Start()
 	{
@@ -17,6 +19,8 @@ public class FallingCatController : MonoBehaviour
 	{
 		if (!_isGrounded)
 			transform.position -= (Vector3)new Vector2(0.0f, GameValues.fallingSpeed * Time.deltaTime);
+
+		_timeSinceSpawn += Time.deltaTime;
 	}
 
 	private void OnTriggerEnter2D(Collider2D collider)
@@ -32,6 +36,7 @@ public class FallingCatController : MonoBehaviour
 				score = Mathf.RoundToInt(score);
 
 			GameController.instance.AddScore(score);
+			GameController.instance.AddReactionTime(_timeSinceSpawn);
 
 			collisionObject.GetComponent<AudioSource>().Play();
 			Disappear();
@@ -44,9 +49,15 @@ public class FallingCatController : MonoBehaviour
 		}
 	}
 
-	private void Blink()
+	private async void Blink()
 	{
+		await Task.Delay(600);
 
+		for (int i = 0; i < 6; i++)
+		{
+			await Task.Delay(200);
+			GetComponent<SpriteRenderer>().enabled = !GetComponent<SpriteRenderer>().enabled;
+		}
 	}
 
 	private void Disappear()
