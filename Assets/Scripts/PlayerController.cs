@@ -1,15 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
 public class PlayerController : MonoBehaviour
 {
-	private float _speed = 500.0f;
-	private float _jumpForce = 400.0f;
-	private float _boundsDistance = 8.6f;
-
 	private Rigidbody2D _rigidbody;
 
 	private bool _isGrounded = false;
@@ -40,25 +34,23 @@ public class PlayerController : MonoBehaviour
 		for (int i = 0; i < colliders.Length; i++)
 		{
 			if (colliders[i].gameObject.tag == "Floor")
-			{
 				_isGrounded = true;
-			}
 		}
 	}
 
 	private void Move(float inputValue)
 	{
 		float y = _rigidbody.velocity.y;
-		_rigidbody.velocity = new Vector2(inputValue * _speed * Time.deltaTime, y);
+		_rigidbody.velocity = new Vector2(inputValue * GameValues.moveSpeed * Time.deltaTime, y);
 
 		if (_rigidbody.velocity.x > 0.0f)
 		{
-			if (transform.position.x >= _boundsDistance)
+			if (transform.position.x >= GameValues.boundsDistance)
 				_rigidbody.velocity = new Vector2(0.0f, y);
 		}
 		else if (_rigidbody.velocity.x < 0.0f)
 		{
-			if (transform.position.x <= -_boundsDistance)
+			if (transform.position.x <= -GameValues.boundsDistance)
 				_rigidbody.velocity = new Vector2(0.0f, y);
 		}
 	}
@@ -68,6 +60,6 @@ public class PlayerController : MonoBehaviour
 		if (!_isGrounded)
 			return;
 
-		_rigidbody.AddForce(new Vector2(0.0f, _jumpForce));
+		_rigidbody.AddForce(new Vector2(0.0f, GameValues.jumpForce));
 	}
 }

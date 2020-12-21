@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{EA0DA4DB-F59E-26C9-FC12-91BF58C1CA23}</ProjectGuid>
+    <ProjectGuid>{63051FFC-D3CB-A62E-E8FF-406541F78E5B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -53,11 +53,22 @@
     <UnityVersion>2020.2.0f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\GameController.cs" />
-    <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\FallingCatController.cs" />
+    <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\LoadingCircle.cs" />
+    <Compile Include="Assets\Scripts\Webhook\Embed.cs" />
+    <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Webhook\Webhook.cs" />
+    <Compile Include="Assets\Scripts\Util.cs" />
+    <Compile Include="Assets\Scripts\GameValues.cs" />
   </ItemGroup>
   <ItemGroup>
+     <None Include="Assets\JsonDotNet\Assemblies\Windows\Newtonsoft.Json.XML" />
+     <None Include="Assets\JsonDotNet\Assemblies\Standalone\Newtonsoft.Json.XML" />
+     <None Include="Assets\JsonDotNet\Assemblies\Standalone\Newtonsoft.Json.dll" />
+     <None Include="Assets\JsonDotNet\Assemblies\AOT\Newtonsoft.Json.dll" />
+     <None Include="Assets\JsonDotNet\Assemblies\AOT\Newtonsoft.Json.XML" />
+     <None Include="Assets\JsonDotNet\Assemblies\Windows\Newtonsoft.Json.dll" />
     <Reference Include="UnityEngine">
       <HintPath>D:\Programs\Unity\2020.2.0f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
@@ -282,6 +293,9 @@
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>Library\PackageCache\com.unity.ext.nunit@1.0.5\net35\unity-custom\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets\JsonDotNet\Assemblies\Standalone\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:\Programs\Unity\2020.2.0f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
