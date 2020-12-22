@@ -1,10 +1,7 @@
-//using System;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,8 +47,13 @@ public class GameController : MonoBehaviour
 
 		for (int i = 0; i < 100; i++)
 		{
-			float boundsDistance = GameValues.boundsDistance + 0.5f;
+			float boundsDistance = GameValues.boundsDistance - 0.5f;
 			_catSpawnXPositions.Add(Util.RandomRangeWithStaticSeed(-boundsDistance, boundsDistance));
+		}
+
+		foreach (var item in _catSpawnIntervals)
+		{
+			//print(item);
 		}
 
 		Time.timeScale = 0.0f;
@@ -83,24 +85,23 @@ public class GameController : MonoBehaviour
 		AudioSource audioSource = GetComponent<AudioSource>();
 		audioSource.pitch = pitch;
 
-		if ((int)GameValues.gameVersion == 2)
+		if (GameValues.gameVersion != GameVersion.WithoutSound)
 			audioSource.Play();
 
-		await Task.Delay((int)(GameValues.timeBetweenSoundCueAndSpawn * 1000.0f));
+		if (GameValues.gameVersion == GameVersion.WithSoundEarly)
+			await Task.Delay((int)(GameValues.timeBetweenSoundCueAndSpawn * 1000.0f));
 
 		if (_gameFinished)
 			return;
 
-		if ((int)GameValues.gameVersion == 1)
-			audioSource.Play();
-
 		Instantiate(_fallingCatPrefab, new Vector2(_catSpawnXPositions[0], 0.0f), Quaternion.identity);
+		print(_timeElapsed);
 
 		_catSpawnIntervals.RemoveAt(0);
 		_catSpawnXPositions.RemoveAt(0);
 
 		if (_catSpawnIntervals.Count > 0 && _catSpawnXPositions.Count > 0)
-			Invoke("SpawnCat", _catSpawnIntervals[0] - 1.0f);
+			Invoke("SpawnCat", _catSpawnIntervals[0] - GameValues.timeBetweenSoundCueAndSpawn);
 	}
 
 	public void AddScore(float scoreGain)
@@ -166,7 +167,7 @@ public class GameController : MonoBehaviour
 		OnDataPushed();
 	}
 
-	public async Task<HttpResponseMessage> SendWebRequest(string url)
+	private async Task<HttpResponseMessage> SendWebRequest(string url)
 	{
 		return await new HttpClient().GetAsync(url);
 	}
@@ -180,7 +181,7 @@ public class GameController : MonoBehaviour
 	public void StartGame()
 	{
 		Time.timeScale = 1.0f;
-		Invoke("SpawnCat", _catSpawnIntervals[0] - 1.0f);
+		Invoke("SpawnCat", _catSpawnIntervals[0] - GameValues.timeBetweenSoundCueAndSpawn);
 	}
 
 	public void QuitGame()

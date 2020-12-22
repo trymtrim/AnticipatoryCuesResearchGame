@@ -40,7 +40,11 @@ public static class GameValues
 		includeMap = gameValues[2] == "TRUE" ? true : false;
 
 		gameDuration = float.Parse(gameValues[3], CultureInfo.InvariantCulture.NumberFormat);
-		timeBetweenSoundCueAndSpawn = float.Parse(gameValues[4], CultureInfo.InvariantCulture.NumberFormat);
+
+		if (gameVersion == GameVersion.WithSoundEarly)
+			timeBetweenSoundCueAndSpawn = float.Parse(gameValues[4], CultureInfo.InvariantCulture.NumberFormat);
+		else
+			timeBetweenSoundCueAndSpawn = 0.0f;
 
 		moveSpeed = float.Parse(gameValues[5], CultureInfo.InvariantCulture.NumberFormat);
 		jumpForce = float.Parse(gameValues[6], CultureInfo.InvariantCulture.NumberFormat);
