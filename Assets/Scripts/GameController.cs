@@ -1,7 +1,10 @@
 //using System;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -145,27 +148,12 @@ public class GameController : MonoBehaviour
 
 		if (valid)
 		{
+			string arguments = "gameversion=" + gameVersion + "&score=" + score + "&averagereactiontime=" + averageReactionTime + "&distancetraveled=" + distanceTraveled;
+			string url = "https://sharpraccoon.azurewebsites.net/api/SMTProjectTemp?" + arguments;
+
+			await SendWebRequest(url);
+
 			PlayerPrefs.SetInt("AlreadyPlayed", 1);
-
-			//TODO: Push to database
-
-			/*string connectionString = "Server=_;Database=_;User Id=_;Password=_;";
-
-			using (SqlConnection conn = new SqlConnection(connectionString))
-			{
-				conn.Open();
-
-				string text = $"INSERT INTO _ VALUES ('{dateTime}', '{score}', '{averageReactionTime}');";
-
-				using (SqlCommand cmd = new SqlCommand(text, conn))
-				{
-					//Execute the command and log the # rows affected.
-					var rows = await cmd.ExecuteNonQueryAsync();
-					print($"{rows} rows were updated");
-				}
-
-				conn.Close();
-			}*/
 		}
 
 		//Send discord message
@@ -176,6 +164,11 @@ public class GameController : MonoBehaviour
 
 		//TODO: Do this after data has been pushed (await database web request)
 		OnDataPushed();
+	}
+
+	public async Task<HttpResponseMessage> SendWebRequest(string url)
+	{
+		return await new HttpClient().GetAsync(url);
 	}
 
 	private void OnDataPushed()
