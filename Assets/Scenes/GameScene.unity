@@ -442,7 +442,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Quit
+  m_Text: 'Exit
+
+'
 --- !u!222 &748160534
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -793,6 +795,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1053621810}
   m_CullTransparentMesh: 1
+--- !u!114 &1201008390 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 304208160828898013, guid: fa73ac94b68644d42bf878672b1171d4, type: 3}
+  m_PrefabInstance: {fileID: 304208160778058749}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14c5aad13f105584a9f60174b82799da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1466319333
 GameObject:
   m_ObjectHideFlags: 0
@@ -1017,7 +1030,7 @@ GameObject:
   - component: {fileID: 1632087195}
   - component: {fileID: 1632087194}
   m_Layer: 5
-  m_Name: QuitButton
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1235,6 +1248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fallingCatPrefab: {fileID: 5377417864328511562, guid: 7a2b0466e8c87424e8008eb57a7d8f55, type: 3}
   _mapPrefab: {fileID: 5232716183965074485, guid: fb885002545220545913651fb4ff21bb, type: 3}
+  _player: {fileID: 1201008390}
   _scoreText: {fileID: 1466319336}
   _progressBar: {fileID: 1940904180}
   _gameFinishedPanel: {fileID: 217575922}
@@ -1742,7 +1756,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 304208160828898009, guid: fa73ac94b68644d42bf878672b1171d4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 304208160828898009, guid: fa73ac94b68644d42bf878672b1171d4, type: 3}
       propertyPath: m_LocalPosition.z

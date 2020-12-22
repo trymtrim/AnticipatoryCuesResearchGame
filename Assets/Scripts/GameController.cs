@@ -60,8 +60,6 @@ public class GameController : MonoBehaviour
 
 		if (GameValues.includeMap)
 			Instantiate(_mapPrefab);
-
-		Invoke("SpawnCat", _catSpawnIntervals[0] - 1.0f);
 	}
 
 	private void Update()
@@ -130,12 +128,10 @@ public class GameController : MonoBehaviour
 		if (_reactionTimes.Count > 1)
 			averageReactionTime /= _reactionTimes.Count;
 
-		if (GameValues.trackData && PlayerPrefs.GetInt("AlreadyPlayed") == 0 && valid)
-			PushDataToDatabase(averageReactionTime, true); //TODO: Pass in actual validity
+		if (GameValues.trackData && PlayerPrefs.GetInt("AlreadyPlayed") == 0)
+			PushDataToDatabase(averageReactionTime, valid);
 		else
 			OnDataPushed();
-
-		print (averageReactionTime);
 	}
 
 	private async void PushDataToDatabase(float reactionTime, bool valid)
@@ -147,31 +143,36 @@ public class GameController : MonoBehaviour
 		string validity = valid ? "Yes" : "No";
 		DateTime dateTime = DateTime.Now;
 
-		/*string connectionString = "Server=_;Database=_;User Id=_;Password=_;";
-
-		using (SqlConnection conn = new SqlConnection(connectionString))
+		if (valid)
 		{
-			conn.Open();
+			PlayerPrefs.SetInt("AlreadyPlayed", 1);
 
-			string text = $"INSERT INTO _ VALUES ('{dateTime}', '{score}', '{averageReactionTime}');";
+			//TODO: Push to database
 
-			using (SqlCommand cmd = new SqlCommand(text, conn))
+			/*string connectionString = "Server=_;Database=_;User Id=_;Password=_;";
+
+			using (SqlConnection conn = new SqlConnection(connectionString))
 			{
-				//Execute the command and log the # rows affected.
-				var rows = await cmd.ExecuteNonQueryAsync();
-				print($"{rows} rows were updated");
-			}
+				conn.Open();
 
-			conn.Close();
-		}*/
+				string text = $"INSERT INTO _ VALUES ('{dateTime}', '{score}', '{averageReactionTime}');";
+
+				using (SqlCommand cmd = new SqlCommand(text, conn))
+				{
+					//Execute the command and log the # rows affected.
+					var rows = await cmd.ExecuteNonQueryAsync();
+					print($"{rows} rows were updated");
+				}
+
+				conn.Close();
+			}*/
+		}
 
 		//Send discord message
 		DiscordWebhook.Webhook webhook = new DiscordWebhook.Webhook("https://discord.com/api/webhooks/790416883413286963/M_DjeIv912oVMcKEeCTzujWXbFpV0gR4qWjd9OQoueAxelcbKzB6PPhco6toiG1Xyfxx");
 
 		string webhookString = $"A participant just finished playing\n```Game version: {gameVersion}   |   Score: {score}   |   Average reaction time: {averageReactionTime}   |   Distance traveled: {distanceTraveled}   |   Valid: {validity}```";
 		await webhook.Send(webhookString);
-
-		PlayerPrefs.SetInt("AlreadyPlayed", 1);
 
 		//TODO: Do this after data has been pushed (await database web request)
 		OnDataPushed();
@@ -186,6 +187,7 @@ public class GameController : MonoBehaviour
 	public void StartGame()
 	{
 		Time.timeScale = 1.0f;
+		Invoke("SpawnCat", _catSpawnIntervals[0] - 1.0f);
 	}
 
 	public void QuitGame()

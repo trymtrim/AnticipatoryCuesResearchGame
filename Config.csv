@@ -1,0 +1,17 @@
+﻿Game version;;;2;(0 = without sound, 1 = with sound, 2 = with sound early)
+Track data;;;TRUE;
+Include map;;;FALSE;
+;;;;
+Game duration;;;10;(seconds)
+Time between cue and spawn;;;1;(seconds)
+;;;;
+Player move speed;;;500;
+Player jump force;;;400;
+;;;;
+Cat min spawn interval;;;1.25;
+Cat max spawn interval;;;5;
+Cat falling speed;;;2;
+;;;;
+Lerp score gain;;;TRUE;(TRUE = linear interpolation, FALSE = stepwise)
+Min score gain;;;1;
+Max score gain;;;5;

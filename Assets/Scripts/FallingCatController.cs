@@ -7,11 +7,15 @@ public class FallingCatController : MonoBehaviour
 {
 	private float _spawnHeight = 5.25f;
 
+	private SpriteRenderer _sprite;
+
 	private bool _isGrounded = false;
 	private float _timeSinceSpawn = 0.0f;
 
 	private void Start()
 	{
+		_sprite = GetComponent<SpriteRenderer>();
+
 		transform.position = new Vector2(transform.position.x, _spawnHeight);
 	}
 
@@ -56,7 +60,9 @@ public class FallingCatController : MonoBehaviour
 		for (int i = 0; i < 6; i++)
 		{
 			await Task.Delay(200);
-			GetComponent<SpriteRenderer>().enabled = !GetComponent<SpriteRenderer>().enabled;
+
+			if (_sprite != null)
+				_sprite.enabled = !_sprite.enabled;
 		}
 	}
 

@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+
 public static class GameValues
 {
 	//General
@@ -28,22 +32,45 @@ public static class GameValues
 
 	public static void Load()
 	{
-		gameVersion = (GameVersion)1;
-		trackData = true;
-		includeMap = false;
+		string filePath = Path.GetFullPath("Config.csv");
+		List<string> gameValues = GetValuesFromCSV("Config.csv");
 
-		gameDuration = 10.0f;
-		timeBetweenSoundCueAndSpawn = 1.0f;
+		gameVersion = (GameVersion)int.Parse(gameValues[0], CultureInfo.InvariantCulture.NumberFormat);
+		trackData = gameValues[1] == "TRUE" ? true : false;
+		includeMap = gameValues[2] == "TRUE" ? true : false;
 
-		moveSpeed = 500.0f;
-		jumpForce = 400.0f;
+		gameDuration = float.Parse(gameValues[3], CultureInfo.InvariantCulture.NumberFormat);
+		timeBetweenSoundCueAndSpawn = float.Parse(gameValues[4], CultureInfo.InvariantCulture.NumberFormat);
 
-		minSpawnInterval = 1.25f;
-		maxSpawnInterval = 5.0f;
-		fallingSpeed = 2.0f;
+		moveSpeed = float.Parse(gameValues[5], CultureInfo.InvariantCulture.NumberFormat);
+		jumpForce = float.Parse(gameValues[6], CultureInfo.InvariantCulture.NumberFormat);
 
-		lerpScoreGain = true;
-		minScoreGain = 1.0f;
-		maxScoreGain = 5.0f;
+		minSpawnInterval = float.Parse(gameValues[7], CultureInfo.InvariantCulture.NumberFormat);
+		maxSpawnInterval = float.Parse(gameValues[8], CultureInfo.InvariantCulture.NumberFormat);
+		fallingSpeed = float.Parse(gameValues[9], CultureInfo.InvariantCulture.NumberFormat);
+
+		lerpScoreGain = gameValues[10] == "TRUE" ? true : false;
+		minScoreGain = float.Parse(gameValues[11], CultureInfo.InvariantCulture.NumberFormat);
+		maxScoreGain = float.Parse(gameValues[12], CultureInfo.InvariantCulture.NumberFormat);
+	}
+
+	private static List<string> GetValuesFromCSV(string filePath)
+	{
+		List<string> gameValuesList = new List<string>();
+
+		using (var reader = new StreamReader(filePath))
+		{
+			while (!reader.EndOfStream)
+			{
+				var line = reader.ReadLine();
+				var values = line.Split(';');
+				var value = values[3];
+
+				if (value != string.Empty)
+					gameValuesList.Add(value);
+			}
+		}
+
+		return gameValuesList;
 	}
 }
