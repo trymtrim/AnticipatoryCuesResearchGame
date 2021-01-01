@@ -2,7 +2,7 @@
 Track data;;;TRUE;
 Include map;;;FALSE;(Ignore this for now)
 ;;;;
-Game duration;;;60;(seconds)
+Game duration;;;15;(seconds)
 Time between cue and spawn;;;1;(seconds)
 ;;;;
 Player move speed;;;500;

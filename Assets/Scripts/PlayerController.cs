@@ -2,6 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(AudioSource))]
 public class PlayerController : MonoBehaviour
 {
 	public float distanceTraveled { get; private set; } = 0.0f;
@@ -15,6 +16,8 @@ public class PlayerController : MonoBehaviour
 	{
 		_rigidbody = GetComponent<Rigidbody2D>();
 		_lastFramePosition = transform.position;
+
+		GetComponent<AudioSource>().volume = PlayerPrefs.GetFloat("Volume");
 	}
 
 	private void Update()

@@ -51,12 +51,10 @@ public class GameController : MonoBehaviour
 			_catSpawnXPositions.Add(Util.RandomRangeWithStaticSeed(-boundsDistance, boundsDistance));
 		}
 
-		foreach (var item in _catSpawnIntervals)
-		{
-			//print(item);
-		}
-
 		Time.timeScale = 0.0f;
+
+		if (PlayerPrefs.GetFloat("Volume") == 0.0f)
+			PlayerPrefs.SetFloat("Volume", 1.0f);
 	}
 
 	private void Start()
@@ -65,6 +63,8 @@ public class GameController : MonoBehaviour
 
 		if (GameValues.includeMap)
 			Instantiate(_mapPrefab);
+
+		GetComponent<AudioSource>().volume = PlayerPrefs.GetFloat("Volume");
 	}
 
 	private void Update()
@@ -81,7 +81,10 @@ public class GameController : MonoBehaviour
 
 	private async void SpawnCat()
 	{
-		float pitch = Util.RandomRangeWithStaticSeed(0.9f, 1.3f);
+		if (_timeElapsed > GameValues.gameDuration - 2.0f)
+			return;
+
+		float pitch = Util.RandomRangeWithStaticSeed(0.9f, 1.15f);
 		AudioSource audioSource = GetComponent<AudioSource>();
 		audioSource.pitch = pitch;
 
@@ -140,16 +143,19 @@ public class GameController : MonoBehaviour
 
 	private async void PushDataToDatabase(float reactionTime, bool valid)
 	{
+		string participantID = PlayerPrefs.GetString("ParticipantID");
 		string gameVersion = ((int)GameValues.gameVersion).ToString();
 		string score = _score.ToString();
 		string averageReactionTime = reactionTime.ToString();
 		string distanceTraveled = _player.distanceTraveled.ToString();
+		string termsAgreed = PlayerPrefs.GetString("TermsAgreed");
+
 		string validity = valid ? "Yes" : "No";
-		DateTime dateTime = DateTime.Now;
 
 		if (valid)
 		{
-			string arguments = "gameversion=" + gameVersion + "&score=" + score + "&averagereactiontime=" + averageReactionTime + "&distancetraveled=" + distanceTraveled;
+			print (participantID);
+			string arguments = "termsagreed=" + termsAgreed + "&participantid=" + participantID + "&gameversion=" + gameVersion + "&score=" + score + "&averagereactiontime=" + averageReactionTime + "&distancetraveled=" + distanceTraveled;
 			string url = "https://sharpraccoon.azurewebsites.net/api/SMTProjectTemp?" + arguments;
 
 			await SendWebRequest(url);
@@ -160,10 +166,9 @@ public class GameController : MonoBehaviour
 		//Send discord message
 		DiscordWebhook.Webhook webhook = new DiscordWebhook.Webhook("https://discord.com/api/webhooks/790416883413286963/M_DjeIv912oVMcKEeCTzujWXbFpV0gR4qWjd9OQoueAxelcbKzB6PPhco6toiG1Xyfxx");
 
-		string webhookString = $"A participant just finished playing\n```Game version: {gameVersion}   |   Score: {score}   |   Average reaction time: {averageReactionTime}   |   Distance traveled: {distanceTraveled}   |   Valid: {validity}```";
+		string webhookString = $"Participant {participantID} just finished playing:\n```Game version: {gameVersion}  |  Score: {score}  |  Average reaction time: {averageReactionTime}  |  Distance traveled: {distanceTraveled}  |  Valid: {validity}  |  Terms agreed: {termsAgreed}```";
 		await webhook.Send(webhookString);
 
-		//TODO: Do this after data has been pushed (await database web request)
 		OnDataPushed();
 	}
 
