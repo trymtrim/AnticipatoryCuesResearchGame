@@ -8,6 +8,8 @@ public class TermsHandler : MonoBehaviour
 	[SerializeField] private Toggle _termsAgreedToggle;
 	[SerializeField] private Slider _audioSlider;
 	[SerializeField] private GameObject _volumePanel;
+	[SerializeField] private Button _termsContinueButton;
+	[SerializeField] private GameObject _alreadyPlayedPanel;
 
 	private AudioSource _audio;
 
@@ -19,6 +21,14 @@ public class TermsHandler : MonoBehaviour
 	private void Start()
 	{
 		_audio = GetComponent<AudioSource>();
+
+		if (PlayerPrefs.GetInt("AlreadyPlayed") == 1)
+			_alreadyPlayedPanel.SetActive(true);
+	}
+
+	public void UpdateTermsToggled()
+	{
+		_termsContinueButton.interactable = _termsAgreedToggle.isOn;
 	}
 
 	public void UpdateTermsAgreed()
@@ -49,5 +59,10 @@ public class TermsHandler : MonoBehaviour
 		PlayerPrefs.SetFloat("Volume", volume);
 
 		SceneManager.LoadScene("IntroScene");
+	}
+
+	public void OpenFreePlayScene()
+	{
+		SceneManager.LoadScene("FreePlayScene");
 	}
 }

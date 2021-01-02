@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\FallingCatController.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\TermsHandler.cs" />
     <Compile Include="Assets\Scripts\LoadingCircle.cs" />
     <Compile Include="Assets\Scripts\GameValues.cs" />
     <Compile Include="Assets\Scripts\Webhook\Embed.cs" />
@@ -62,7 +63,6 @@
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Webhook\Webhook.cs" />
     <Compile Include="Assets\Scripts\Util.cs" />
-    <Compile Include="Assets\Scripts\TermsHandler.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\JsonDotNet\Assemblies\Windows\Newtonsoft.Json.XML" />

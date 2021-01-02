@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum GameVersion
@@ -26,6 +26,8 @@ public class GameController : MonoBehaviour
 	[SerializeField] private GameObject _gameFinishedPanel;
 	[SerializeField] private GameObject _loadingIndicator;
 	[SerializeField] private GameObject _quitButton;
+	[SerializeField] private GameObject _freePlayButton;
+	[SerializeField] private Text _endScreenScoreText;
 
 	public static GameController instance;
 
@@ -37,6 +39,7 @@ public class GameController : MonoBehaviour
 	private float _score = 0.0f;
 	private float _timeElapsed = 0.0f;
 	private List<float> _reactionTimes = new List<float>();
+	int _spawnedCats = 0;
 
 	private void Awake()
 	{
@@ -105,6 +108,8 @@ public class GameController : MonoBehaviour
 
 		if (_catSpawnIntervals.Count > 0 && _catSpawnXPositions.Count > 0)
 			Invoke("SpawnCat", _catSpawnIntervals[0] - GameValues.timeBetweenSoundCueAndSpawn);
+
+		_spawnedCats++;
 	}
 
 	public void AddScore(float scoreGain)
@@ -124,6 +129,10 @@ public class GameController : MonoBehaviour
 		Time.timeScale = 0.0f;
 		CancelInvoke();
 		_gameFinishedPanel.SetActive(true);
+		_endScreenScoreText.text = $"Score: {_score.ToString("F", CultureInfo.CreateSpecificCulture("en-CA"))} / {GameValues.maxScoreGain * _spawnedCats}"; 
+
+		if (SceneManager.GetActiveScene().name == "FreePlayScene")
+			return;
 
 		bool valid = _player.distanceTraveled >= GameValues.gameDuration * ((GameValues.minSpawnInterval + GameValues.maxSpawnInterval) / 4.0f) &&
 			_score >= GameValues.minScoreGain * GameValues.gameDuration / 10.0f;
@@ -181,6 +190,21 @@ public class GameController : MonoBehaviour
 	{
 		_loadingIndicator.SetActive(false);
 		_quitButton.SetActive(true);
+		_freePlayButton.SetActive(true);
+	}
+
+	public void OpenQuestionnaire()
+	{
+		string url = GameValues.gameVersion == 0 ? "https://docs.google.com/forms/d/e/1FAIpQLSdzaAcVL-lNBsRksKBZtMTvsjbwkoTCTONG6m0nbljpPUdMyw/viewform" : "https://docs.google.com/forms/d/e/1FAIpQLSfCfPqyeNqwy7MyEJvv7Vbod1sts-sAO1QkBYfrDqrM9is3Dg/viewform";
+		Application.OpenURL(url);
+
+		_quitButton.GetComponent<Button>().interactable = true;
+		_freePlayButton.GetComponent<Button>().interactable = true;
+	}
+
+	public void OpenFreePlayScene()
+	{
+		SceneManager.LoadScene("FreePlayScene");
 	}
 
 	public void StartGame()
