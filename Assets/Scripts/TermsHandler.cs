@@ -13,6 +13,8 @@ public class TermsHandler : MonoBehaviour
 
 	private AudioSource _audio;
 
+	private float _timeSpentPressingDownResetKeyCombination = 0.0f;
+
 	private void Awake()
 	{
 		GameValues.Load();
@@ -24,6 +26,30 @@ public class TermsHandler : MonoBehaviour
 
 		if (PlayerPrefs.GetInt("AlreadyPlayed") == 1)
 			_alreadyPlayedPanel.SetActive(true);
+	}
+
+	private void Update()
+	{
+		if (_alreadyPlayedPanel.activeInHierarchy)
+		{
+			if (Input.GetKey(KeyCode.R) &&
+				Input.GetKey(KeyCode.Alpha1) &&
+				Input.GetKey(KeyCode.Alpha9) &&
+				Input.GetKey(KeyCode.Alpha0))
+			{
+				_timeSpentPressingDownResetKeyCombination += Time.deltaTime;
+
+				if (_timeSpentPressingDownResetKeyCombination > 3.0f)
+				{
+					PlayerPrefs.DeleteAll();
+					SceneManager.LoadScene("TermsScene");
+				}
+			}
+			else
+			{
+				_timeSpentPressingDownResetKeyCombination = 0.0f;
+			}
+		}
 	}
 
 	public void UpdateTermsToggled()
