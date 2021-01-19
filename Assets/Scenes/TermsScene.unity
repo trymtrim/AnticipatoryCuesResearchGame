@@ -1485,14 +1485,14 @@ MonoBehaviour:
   m_Text: 'Hello!
 
 
-    Thank you so much for taking time to participate in our study
-    on video game sound. We really do appreciate it!
+    Thank you so much for taking time to participate in our experiment.
+    We really do appreciate it!
 
 
-    The entire experiment
-    will take approximately 5 minutes and all collected data will be anonymous. Please
-    read through the terms & conditions on the next page carefully to ensure that
-    you are properly informed about the exact proceedings of this study.'
+    The entire experiment will take approximately
+    5 minutes and all collected data will be anonymous. Please read through the terms
+    & conditions on the next page carefully to ensure that you are properly informed
+    about the exact proceedings of this study.'
 --- !u!222 &1013068904
 CanvasRenderer:
   m_ObjectHideFlags: 0
